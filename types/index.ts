@@ -9,13 +9,14 @@ export interface HealthInstitution {
   ADRES: string;
   Latitude: number;
   Longitude: number;
-  // Eski format alanları da ekleyelim (geriye uyumluluk için)
   IL_ADI?: string;
   ILCE_ADI?: string;
+  SAGLIK_TESISI_ADI?: string;
   ANA_KATEGORI?: string;
   ALT_KATEGORI?: string;
   ENLEM?: number;
   BOYLAM?: number;
+  distance?: number; // Mesafe bilgisi için yeni alan
 }
 
 export interface FilterOptions {
@@ -24,4 +25,9 @@ export interface FilterOptions {
   anaKategori: string;
   altKategori: string;
   searchTerm: string;
+}
+
+// Kategori ikonları için yeni interface
+export interface CategoryIcon {
+  [key: string]: string; // Alt kategori adı: SVG path
 }
