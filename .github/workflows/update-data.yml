@@ -5,12 +5,18 @@ on:
     - cron: '0 0 * * *'  # Her gün gece yarısı
   workflow_dispatch:      # Manuel tetikleme için
 
+permissions:
+  contents: write        # Repository içeriğine yazma izni
+  actions: write        # Workflow çalıştırma izni
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # Explicit token kullanımı
     
     - name: Setup Node.js
       uses: actions/setup-node@v3
@@ -34,8 +40,10 @@ jobs:
     
     - name: Commit and push if changed
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
         git add public/data/health_data.json
         git commit -m "Update health data: $(date -u)" || exit 0
         git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
