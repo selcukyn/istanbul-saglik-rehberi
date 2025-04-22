@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { FilterOptions, HealthInstitution } from '@/types';
 
 interface FilterSectionProps {
   data: HealthInstitution[];
   currentFilters: FilterOptions;
   onFilterChange: (filters: FilterOptions) => void;
-  onUseLocation: () => void;
+  onUseLocation: () => void;  // Yeni prop ekledik
 }
 
 export default function FilterSection({ 
