@@ -18,7 +18,6 @@ export default function Home() {
     searchTerm: ''
   });
 
-  // Mesafe hesaplama fonksiyonu
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const R = 6371; // Dünya'nın yarıçapı (km)
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -31,7 +30,6 @@ export default function Home() {
     return R * c;
   };
 
-  // Konum kullanma fonksiyonu
   const handleUseLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -39,14 +37,14 @@ export default function Home() {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
           
-          // İl ve ilçe filtrelerini sıfırla
+          // Reset il and ilce filters
           setFilters(prev => ({
             ...prev,
             il: '',
             ilce: ''
           }));
 
-          // Mesafeleri hesapla ve verileri sırala
+          // Calculate distances and sort data
           const dataWithDistances = data.map(item => {
             const lat = item.Latitude || item.ENLEM || 0;
             const lng = item.Longitude || item.BOYLAM || 0;
@@ -54,7 +52,7 @@ export default function Home() {
             return { ...item, distance };
           });
 
-          // Mesafeye göre sırala
+          // Sort by distance
           const sortedData = dataWithDistances.sort((a, b) => 
             (a.distance || Infinity) - (b.distance || Infinity)
           );
@@ -71,7 +69,6 @@ export default function Home() {
     }
   };
 
-  // Veri yükleme
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -89,55 +86,46 @@ export default function Home() {
     loadData();
   }, []);
 
-  // Filtreleme
   useEffect(() => {
-    let filtered = [...data];
+    let filtered = data;
 
-    // İl filtreleme
     if (filters.il) {
       filtered = filtered.filter(item => 
         (item["Il Adi"] === filters.il) || (item.IL_ADI === filters.il)
       );
     }
 
-    // İlçe filtreleme
     if (filters.ilce) {
       filtered = filtered.filter(item => 
         (item["Ilce Adi"] === filters.ilce) || (item.ILCE_ADI === filters.ilce)
       );
     }
 
-    // Ana kategori filtreleme
     if (filters.anaKategori) {
       filtered = filtered.filter(item => 
         (item["Ana Kategori"] === filters.anaKategori) || (item.ANA_KATEGORI === filters.anaKategori)
       );
     }
 
-    // Alt kategori filtreleme
     if (filters.altKategori) {
       filtered = filtered.filter(item => 
         (item["Alt Kategori"] === filters.altKategori) || (item.ALT_KATEGORI === filters.altKategori)
       );
     }
 
-    // Kullanıcı konumu varsa mesafeleri güncelle
     if (userLocation) {
-      filtered = filtered.map(item => ({
-        ...item,
-        distance: calculateDistance(
-          userLocation.lat,
-          userLocation.lng,
-          item.Latitude || item.ENLEM || 0,
-          item.Longitude || item.BOYLAM || 0
-        )
-      }));
+      // Eğer konum kullanılıyorsa, mesafeleri hesapla ve sırala
+      filtered = filtered.map(item => {
+        const lat = item.Latitude || item.ENLEM || 0;
+        const lng = item.Longitude || item.BOYLAM || 0;
+        const distance = calculateDistance(userLocation.lat, userLocation.lng, lat, lng);
+        return { ...item, distance };
+      }).sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
     }
 
     setFilteredData(filtered);
   }, [data, filters, userLocation]);
 
-  // Yükleme durumu
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -157,10 +145,7 @@ export default function Home() {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {filteredData.map((institution, index) => (
-          <HealthCard 
-            key={`${institution._id}-${index}`}
-            institution={institution}
-          />
+          <HealthCard key={institution._id || index} institution={institution} />
         ))}
       </div>
       
