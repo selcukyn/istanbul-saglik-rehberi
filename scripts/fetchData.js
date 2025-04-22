@@ -1,17 +1,18 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const config = require('./config');
 
 async function fetchAndSaveData() {
   try {
     // API endpoint ve parametreler
-    const url = process.env.NEXT_PUBLIC_API_URL || "https://data.ibb.gov.tr/api/3/action/datastore_search";
+    const url = config.build.apiUrl;
     const params = {
-      resource_id: "f2154883-68e3-41dc-b2be-a6c2eb721c9e",
-      limit: 1000000
+      resource_id: config.data.resourceId,
+      limit: config.data.limit
     };
 
-    console.log('Veri çekme işlemi başlatıldı:', process.env.CURRENT_DATE);
+    console.log('Veri çekme işlemi başlatıldı:', config.build.currentDate);
 
     // API'den veriyi çek
     const response = await axios.get(url, { params });
@@ -33,8 +34,8 @@ async function fetchAndSaveData() {
 
     // Veriyi JSON dosyası olarak kaydet
     const dataToSave = {
-      lastUpdated: process.env.CURRENT_DATE,
-      updatedBy: process.env.GITHUB_USER || 'system',
+      lastUpdated: config.build.currentDate,
+      updatedBy: config.build.githubUser,
       totalRecords: processedData.length,
       data: processedData
     };
