@@ -4,8 +4,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // TypeScript hataları için daha detaylı raporlama
   typescript: {
-    ignoreBuildErrors: false, // TypeScript hatalarını göster
+    ignoreBuildErrors: false,
   }
 }
 
