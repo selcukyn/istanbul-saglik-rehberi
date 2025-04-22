@@ -9,3 +9,11 @@ export interface HealthInstitution {
   ENLEM: number;
   BOYLAM: number;
 }
+
+export interface FilterOptions {
+  il: string;
+  ilce: string;
+  anaKategori: string;
+  altKategori: string;
+  searchTerm: string; // searchTerm eklendi
+}
