@@ -9,6 +9,7 @@ export default function Home() {
   const [data, setData] = useState<HealthInstitution[]>([]);
   const [filteredData, setFilteredData] = useState<HealthInstitution[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userLocation, setUserLocation] = useState<{lat: number; lng: number} | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({
     il: '',
     ilce: '',
@@ -17,76 +18,5 @@ export default function Home() {
     searchTerm: ''
   });
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await fetch('/data/health_data.json');
-        const jsonData = await response.json();
-        setData(jsonData.data);
-        setFilteredData(jsonData.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Veri yükleme hatası:', error);
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const filtered = data.filter(item => {
-      const matchesIl = !filters.il || 
-        item["Il Adi"] === filters.il || 
-        item.IL_ADI === filters.il;
-        
-      const matchesIlce = !filters.ilce || 
-        item["Ilce Adi"] === filters.ilce || 
-        item.ILCE_ADI === filters.ilce;
-        
-      const matchesAnaKategori = !filters.anaKategori || 
-        item["Ana Kategori"] === filters.anaKategori || 
-        item.ANA_KATEGORI === filters.anaKategori;
-        
-      const matchesAltKategori = !filters.altKategori || 
-        item["Alt Kategori"] === filters.altKategori || 
-        item.ALT_KATEGORI === filters.altKategori;
-
-      return matchesIl && matchesIlce && matchesAnaKategori && matchesAltKategori;
-    });
-
-    setFilteredData(filtered);
-  }, [data, filters]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <FilterSection
-        data={data}
-        currentFilters={filters}
-        onFilterChange={setFilters}
-      />
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {filteredData.map((institution, index) => (
-          <HealthCard key={index} institution={institution} />
-        ))}
-      </div>
-      
-      {filteredData.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
-            Arama kriterlerinize uygun sonuç bulunamadı.
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // Dünya'nın yarıçapı (km)
