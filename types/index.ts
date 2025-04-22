@@ -16,7 +16,7 @@ export interface HealthInstitution {
   ALT_KATEGORI?: string;
   ENLEM?: number;
   BOYLAM?: number;
-  distance?: number; // Mesafe bilgisi için yeni alan
+  distance?: number;
 }
 
 export interface FilterOptions {
@@ -25,9 +25,4 @@ export interface FilterOptions {
   anaKategori: string;
   altKategori: string;
   searchTerm: string;
-}
-
-// Kategori ikonları için yeni interface
-export interface CategoryIcon {
-  [key: string]: string; // Alt kategori adı: SVG path
 }
