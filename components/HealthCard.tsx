@@ -1,50 +1,49 @@
 'use client';
 
-import { MapPinIcon } from '@heroicons/react/24/outline';
-
-interface HealthInstitution {
-  SAGLIK_TESISI_ADI: string;
-  ANA_KATEGORI: string;
-  ALT_KATEGORI: string;
-  IL_ADI: string;
-  ILCE_ADI: string;
-  MAHALLE_ADI: string;
-  ADRES: string;
-  ENLEM: number;
-  BOYLAM: number;
-}
+import { HealthInstitution } from '@/types';
 
 interface HealthCardProps {
   institution: HealthInstitution;
 }
 
 export default function HealthCard({ institution }: HealthCardProps) {
-  const handleDirectionsClick = () => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${institution.ENLEM},${institution.BOYLAM}`;
-    window.open(url, '_blank');
+  const handleDirections = () => {
+    const { ENLEM, BOYLAM } = institution;
+    if (ENLEM && BOYLAM) {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${ENLEM},${BOYLAM}`;
+      window.open(url, '_blank');
+    } else {
+      alert('Konum bilgisi eksik.');
+    }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-        {institution.SAGLIK_TESISI_ADI}
-      </h3>
+    <div className="bg-white p-4 rounded-lg shadow-md">
+      <h2 className="text-xl font-bold">{institution.SAGLIK_TESISI_ADI || 'Bilinmeyen Kurum'}</h2>
       
-      <div className="space-y-2 text-gray-600">
-        <p><span className="font-medium">Ana Kategori:</span> {institution.ANA_KATEGORI}</p>
-        <p><span className="font-medium">Alt Kategori:</span> {institution.ALT_KATEGORI}</p>
-        <p><span className="font-medium">İl/İlçe:</span> {institution.IL_ADI}/{institution.ILCE_ADI}</p>
-        <p><span className="font-medium">Mahalle:</span> {institution.MAHALLE_ADI}</p>
-        <p><span className="font-medium">Adres:</span> {institution.ADRES}</p>
-      </div>
+      <p className="text-sm text-gray-500">{institution.ALT_KATEGORI || 'Anlaşmalı değil'}</p>
+      
+      <p className="text-gray-700 mt-2">{institution.ADRES || 'Adres bilgisi yok'}</p>
+      
+      <p className="text-sm text-gray-500">{institution.ILCE_ADI}, {institution.IL_ADI}</p>
 
-      <button
-        onClick={handleDirectionsClick}
-        className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-      >
-        <MapPinIcon className="h-5 w-5 mr-2" />
-        Yol Tarifi Al
-      </button>
+      {institution.TELEFON && (
+        <p className="text-blue-500 mt-2">
+          İletişim: <a href={`tel:${institution.TELEFON}`}>{institution.TELEFON}</a>
+        </p>
+      )}
+
+      <div className="mt-4 flex justify-between">
+        <button className="bg-green-500 text-white px-4 py-2 rounded-md">
+          {institution.ALT_KATEGORI || 'Anlaşmalı değil'}
+        </button>
+        <button
+          onClick={handleDirections}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+          Yol Tarifi
+        </button>
+      </div>
     </div>
   );
 }
