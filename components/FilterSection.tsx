@@ -11,10 +11,10 @@ interface FilterSectionProps {
 export default function FilterSection({ data, currentFilters, onFilterChange }: FilterSectionProps) {
   // Unique değerleri al
   const uniqueValues = {
-    il: [...new Set(data.map(item => item.IL_ADI))].sort(),
-    ilce: [...new Set(data.map(item => item.ILCE_ADI))].sort(),
-    anaKategori: [...new Set(data.map(item => item.ANA_KATEGORI))].sort(),
-    altKategori: [...new Set(data.map(item => item.ALT_KATEGORI))].sort(),
+    il: Array.from(new Set(data.map(item => item.IL_ADI))).sort(),
+    ilce: Array.from(new Set(data.map(item => item.ILCE_ADI))).sort(),
+    anaKategori: Array.from(new Set(data.map(item => item.ANA_KATEGORI))).sort(),
+    altKategori: Array.from(new Set(data.map(item => item.ALT_KATEGORI))).sort(),
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
