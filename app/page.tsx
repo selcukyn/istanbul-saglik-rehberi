@@ -36,15 +36,11 @@ export default function Home() {
 
   useEffect(() => {
     const filtered = data.filter(item => {
-      const matchesIl = !filters.il || item.IL_ADI === filters.il;
-      const matchesIlce = !filters.ilce || item.ILCE_ADI === filters.ilce;
-      const matchesAnaKategori = !filters.anaKategori || item.ANA_KATEGORI === filters.anaKategori;
-      const matchesAltKategori = !filters.altKategori || item.ALT_KATEGORI === filters.altKategori;
-      const matchesSearch = !filters.searchTerm || 
-        item.SAGLIK_TESISI_ADI.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        item.ADRES.toLowerCase().includes(filters.searchTerm.toLowerCase());
+      const matchesIlce = !filters.ilce || item["Ilce Adi"] === filters.ilce;
+      const matchesAnaKategori = !filters.anaKategori || item["Ana Kategori"] === filters.anaKategori;
+      const matchesAltKategori = !filters.altKategori || item["Alt Kategori"] === filters.altKategori;
 
-      return matchesIl && matchesIlce && matchesAnaKategori && matchesAltKategori && matchesSearch;
+      return matchesIlce && matchesAnaKategori && matchesAltKategori;
     });
 
     setFilteredData(filtered);
@@ -61,9 +57,9 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <FilterSection
+        data={data}
         currentFilters={filters}
         onFilterChange={setFilters}
-        data={data}
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
