@@ -6,6 +6,7 @@ interface HealthCardProps {
   institution: HealthInstitution;
 }
 
+// export function yerine export default function kullanıyoruz
 export default function HealthCard({ institution }: HealthCardProps) {
   const handleDirections = () => {
     // Öncelikle yeni format koordinatları kontrol et, yoksa eski formatı kullan
