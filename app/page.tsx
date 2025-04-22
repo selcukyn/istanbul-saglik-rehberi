@@ -36,11 +36,23 @@ export default function Home() {
 
   useEffect(() => {
     const filtered = data.filter(item => {
-      const matchesIlce = !filters.ilce || item["Ilce Adi"] === filters.ilce;
-      const matchesAnaKategori = !filters.anaKategori || item["Ana Kategori"] === filters.anaKategori;
-      const matchesAltKategori = !filters.altKategori || item["Alt Kategori"] === filters.altKategori;
+      const matchesIl = !filters.il || 
+        item["Il Adi"] === filters.il || 
+        item.IL_ADI === filters.il;
+        
+      const matchesIlce = !filters.ilce || 
+        item["Ilce Adi"] === filters.ilce || 
+        item.ILCE_ADI === filters.ilce;
+        
+      const matchesAnaKategori = !filters.anaKategori || 
+        item["Ana Kategori"] === filters.anaKategori || 
+        item.ANA_KATEGORI === filters.anaKategori;
+        
+      const matchesAltKategori = !filters.altKategori || 
+        item["Alt Kategori"] === filters.altKategori || 
+        item.ALT_KATEGORI === filters.altKategori;
 
-      return matchesIlce && matchesAnaKategori && matchesAltKategori;
+      return matchesIl && matchesIlce && matchesAnaKategori && matchesAltKategori;
     });
 
     setFilteredData(filtered);
