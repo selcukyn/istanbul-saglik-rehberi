@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',  // Static HTML Export için gerekli
+  output: 'export',
   images: {
-    unoptimized: true, // Cloudflare Pages için gerekli
+    unoptimized: true,
   },
-  trailingSlash: true, // URL sonlarına / ekler
+  typescript: {
+    ignoreBuildErrors: false, // TypeScript hatalarını göster
+  }
 }
 
 module.exports = nextConfig
