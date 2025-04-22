@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
+  output: 'export',  // Static HTML Export için gerekli
+  images: {
+    unoptimized: true, // Cloudflare Pages için gerekli
+  },
+  trailingSlash: true, // URL sonlarına / ekler
 }
 
 module.exports = nextConfig
