@@ -1,11 +1,15 @@
 export interface HealthInstitution {
-  SAGLIK_TESISI_ADI: string;
+  _id: number;
+  "Saglik Tesisi Adi": string;
+  "Ana Kategori": string;
+  "Alt Kategori": string;
+  "Ilce Adi": string;
+  "Mahalle Adi": string;
+  ADRES: string;
+  Latitude: number;
+  Longitude: number;
   ANA_KATEGORI: string;
   ALT_KATEGORI: string;
-  IL_ADI: string;
-  ILCE_ADI: string;
-  MAHALLE_ADI: string;
-  ADRES: string;
   ENLEM: number;
   BOYLAM: number;
 }
