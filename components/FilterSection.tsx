@@ -9,18 +9,22 @@ interface FilterSectionProps {
 }
 
 export default function FilterSection({ data, currentFilters, onFilterChange }: FilterSectionProps) {
-  // Unique değerleri al (Set kullanmadan)
-  const getUniqueValues = (arr: any[], key: string): string[] => {
-    const values = arr.map(item => item[key]);
-    const uniqueValues = values.filter((value, index) => values.indexOf(value) === index);
-    return uniqueValues.sort();
+  // Unique değerleri al (Array.from ve Set yerine farklı bir yaklaşım)
+  const getUniqueValues = (key: string): string[] => {
+    const values: { [key: string]: boolean } = {};
+    data.forEach(item => {
+      if (item[key]) {
+        values[item[key]] = true;
+      }
+    });
+    return Object.keys(values).sort();
   };
 
   const uniqueValues = {
-    il: getUniqueValues(data, 'IL_ADI'),
-    ilce: getUniqueValues(data, 'ILCE_ADI'),
-    anaKategori: getUniqueValues(data, 'ANA_KATEGORI'),
-    altKategori: getUniqueValues(data, 'ALT_KATEGORI'),
+    il: getUniqueValues('IL_ADI'),
+    ilce: getUniqueValues('ILCE_ADI'),
+    anaKategori: getUniqueValues('ANA_KATEGORI'),
+    altKategori: getUniqueValues('ALT_KATEGORI'),
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
