@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getHealthData, filterHealthData } from '@/lib/healthService';
-import { HealthInstitution } from '@/types';
+import { HealthInstitution, FilterOptions } from '@/types';
 import FilterSection from '@/components/FilterSection';
 import HealthCard from '@/components/HealthCard';
 
@@ -10,7 +9,7 @@ export default function Home() {
   const [data, setData] = useState<HealthInstitution[]>([]);
   const [filteredData, setFilteredData] = useState<HealthInstitution[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterOptions>({
     il: '',
     ilce: '',
     anaKategori: '',
@@ -21,9 +20,10 @@ export default function Home() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const healthData = await getHealthData();
-        setData(healthData);
-        setFilteredData(healthData);
+        const response = await fetch('/data/health_data.json');
+        const jsonData = await response.json();
+        setData(jsonData.data);
+        setFilteredData(jsonData.data);
         setLoading(false);
       } catch (error) {
         console.error('Veri yükleme hatası:', error);
@@ -35,7 +35,18 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const filtered = filterHealthData(data, filters);
+    const filtered = data.filter(item => {
+      const matchesIl = !filters.il || item.IL_ADI === filters.il;
+      const matchesIlce = !filters.ilce || item.ILCE_ADI === filters.ilce;
+      const matchesAnaKategori = !filters.anaKategori || item.ANA_KATEGORI === filters.anaKategori;
+      const matchesAltKategori = !filters.altKategori || item.ALT_KATEGORI === filters.altKategori;
+      const matchesSearch = !filters.searchTerm || 
+        item.SAGLIK_TESISI_ADI.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        item.ADRES.toLowerCase().includes(filters.searchTerm.toLowerCase());
+
+      return matchesIl && matchesIlce && matchesAnaKategori && matchesAltKategori && matchesSearch;
+    });
+
     setFilteredData(filtered);
   }, [data, filters]);
 
