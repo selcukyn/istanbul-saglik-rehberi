@@ -4,7 +4,7 @@ const config = {
     staticExport: true,
     environment: process.env.NODE_ENV || 'development',
     apiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://data.ibb.gov.tr/api/3/action/datastore_search',
-    currentDate: process.env.CURRENT_DATE || '2025-04-22 11:09:51',
+    currentDate: process.env.CURRENT_DATE || '2025-04-22 13:24:26',
     githubUser: process.env.GITHUB_USER || 'selcukyn'
   },
   data: {
