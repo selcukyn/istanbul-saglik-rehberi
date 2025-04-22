@@ -1,27 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-
-interface FilterOptions {
-  il: string;
-  ilce: string;
-  anaKategori: string;
-  altKategori: string;
-}
+import { FilterOptions } from '@/types';
 
 interface FilterSectionProps {
   data: any[];
+  currentFilters: FilterOptions;
   onFilterChange: (filters: FilterOptions) => void;
 }
 
-export default function FilterSection({ data, onFilterChange }: FilterSectionProps) {
-  const [filters, setFilters] = useState<FilterOptions>({
-    il: '',
-    ilce: '',
-    anaKategori: '',
-    altKategori: '',
-  });
-
+export default function FilterSection({ data, currentFilters, onFilterChange }: FilterSectionProps) {
   // Unique değerleri al
   const uniqueValues = {
     il: [...new Set(data.map(item => item.IL_ADI))].sort(),
@@ -31,19 +19,28 @@ export default function FilterSection({ data, onFilterChange }: FilterSectionPro
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
+    const newFilters = { ...currentFilters, [key]: value };
     onFilterChange(newFilters);
   };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">İl</label>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Arama Kutusu */}
+        <div className="lg:col-span-2">
+          <input
+            type="text"
+            placeholder="Sağlık kurumu veya adres ara..."
+            className="w-full px-4 py-2 border rounded-md"
+            value={currentFilters.searchTerm}
+            onChange={(e) => handleFilterChange('searchTerm', e.target.value)}
+          />
+        </div>
+
+        <div>
           <select
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            value={filters.il}
+            className="w-full px-4 py-2 border rounded-md"
+            value={currentFilters.il}
             onChange={(e) => handleFilterChange('il', e.target.value)}
           >
             <option value="">Tüm İller</option>
@@ -53,11 +50,10 @@ export default function FilterSection({ data, onFilterChange }: FilterSectionPro
           </select>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">İlçe</label>
+        <div>
           <select
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            value={filters.ilce}
+            className="w-full px-4 py-2 border rounded-md"
+            value={currentFilters.ilce}
             onChange={(e) => handleFilterChange('ilce', e.target.value)}
           >
             <option value="">Tüm İlçeler</option>
@@ -67,29 +63,14 @@ export default function FilterSection({ data, onFilterChange }: FilterSectionPro
           </select>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Ana Kategori</label>
+        <div>
           <select
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            value={filters.anaKategori}
+            className="w-full px-4 py-2 border rounded-md"
+            value={currentFilters.anaKategori}
             onChange={(e) => handleFilterChange('anaKategori', e.target.value)}
           >
             <option value="">Tüm Kategoriler</option>
             {uniqueValues.anaKategori.map(kategori => (
-              <option key={kategori} value={kategori}>{kategori}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Alt Kategori</label>
-          <select
-            className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            value={filters.altKategori}
-            onChange={(e) => handleFilterChange('altKategori', e.target.value)}
-          >
-            <option value="">Tüm Alt Kategoriler</option>
-            {uniqueValues.altKategori.map(kategori => (
               <option key={kategori} value={kategori}>{kategori}</option>
             ))}
           </select>
