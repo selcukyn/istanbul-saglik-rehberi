@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { FilterOptions } from '@/types';
 
 interface FilterSectionProps {
@@ -19,7 +18,10 @@ export default function FilterSection({ data, currentFilters, onFilterChange }: 
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
-    const newFilters = { ...currentFilters, [key]: value };
+    const newFilters: FilterOptions = {
+      ...currentFilters,
+      [key]: value
+    };
     onFilterChange(newFilters);
   };
 
