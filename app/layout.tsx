@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'İstanbul Rehberi',
+  description: 'İstanbul\'daki sağlık kurumlarını kolayca bulun',
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -5,10 +12,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
-      <head>
-        <title>İstanbul Rehberi</title>
-        <meta name="description" content="İstanbul'daki sağlık kurumlarını kolayca bulun" />
-      </head>
       <body>
         <header className="bg-white shadow-sm">
           <div className="container mx-auto px-4 py-4">
