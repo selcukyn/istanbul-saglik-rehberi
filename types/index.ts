@@ -15,5 +15,5 @@ export interface FilterOptions {
   ilce: string;
   anaKategori: string;
   altKategori: string;
-  searchTerm: string; // searchTerm eklendi
+  searchTerm: string;
 }
