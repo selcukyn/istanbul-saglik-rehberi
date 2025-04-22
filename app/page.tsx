@@ -1,38 +1,43 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getHealthData, filterHealthData } from '@/lib/healthService';
 import { HealthInstitution } from '@/types';
+import FilterSection from '@/components/FilterSection';
+import HealthCard from '@/components/HealthCard';
 
 export default function Home() {
-  const [healthData, setHealthData] = useState<HealthInstitution[]>([]);
+  const [data, setData] = useState<HealthInstitution[]>([]);
+  const [filteredData, setFilteredData] = useState<HealthInstitution[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    il: '',
+    ilce: '',
+    anaKategori: '',
+    altKategori: '',
+    searchTerm: ''
+  });
 
-  // API'den veri çekme işlemi
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch('https://data.ibb.gov.tr/api/3/action/datastore_search', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            resource_id: 'f2154883-68e3-41dc-b2be-a6c2eb721c9e',
-            limit: 1000000
-          })
-        });
-        
-        const data = await response.json();
-        setHealthData(data.result.records);
+        const healthData = await getHealthData();
+        setData(healthData);
+        setFilteredData(healthData);
         setLoading(false);
       } catch (error) {
-        console.error('Veri çekme hatası:', error);
+        console.error('Veri yükleme hatası:', error);
         setLoading(false);
       }
     };
 
-    fetchData();
+    loadData();
   }, []);
+
+  useEffect(() => {
+    const filtered = filterHealthData(data, filters);
+    setFilteredData(filtered);
+  }, [data, filters]);
 
   if (loading) {
     return (
@@ -44,14 +49,25 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {healthData.map((institution, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-2">{institution.SAGLIK_TESISI_ADI}</h2>
-            <p className="text-gray-600">{institution.ADRES}</p>
-          </div>
+      <FilterSection
+        currentFilters={filters}
+        onFilterChange={setFilters}
+        data={data}
+      />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        {filteredData.map((institution, index) => (
+          <HealthCard key={index} institution={institution} />
         ))}
       </div>
+      
+      {filteredData.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">
+            Arama kriterlerinize uygun sonuç bulunamadı.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
