@@ -1,31 +1,31 @@
 'use client';
 
-import { FilterOptions } from '@/types';
+import { FilterOptions, HealthInstitution } from '@/types';
 
 interface FilterSectionProps {
-  data: any[];
+  data: HealthInstitution[];
   currentFilters: FilterOptions;
   onFilterChange: (filters: FilterOptions) => void;
 }
 
 export default function FilterSection({ data, currentFilters, onFilterChange }: FilterSectionProps) {
-  const getUniqueValues = (key: string): string[] => {
+  const getUniqueValues = (key: string, alternativeKey?: string): string[] => {
     const values: { [key: string]: boolean } = {};
     data.forEach(item => {
-      // Hem eski hem yeni alan adlarını kontrol et
-      const value = item[key] || item[key.toLowerCase()] || item[key.toUpperCase()];
+      const value = item[key as keyof HealthInstitution] || 
+                   (alternativeKey && item[alternativeKey as keyof HealthInstitution]);
       if (value) {
-        values[value] = true;
+        values[value.toString()] = true;
       }
     });
     return Object.keys(values).sort();
   };
 
   const uniqueValues = {
-    il: getUniqueValues('Il Adi'),
-    ilce: getUniqueValues('Ilce Adi'),
-    anaKategori: getUniqueValues('Ana Kategori'),
-    altKategori: getUniqueValues('Alt Kategori')
+    il: getUniqueValues("Il Adi", "IL_ADI"),
+    ilce: getUniqueValues("Ilce Adi", "ILCE_ADI"),
+    anaKategori: getUniqueValues("Ana Kategori", "ANA_KATEGORI"),
+    altKategori: getUniqueValues("Alt Kategori", "ALT_KATEGORI")
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
