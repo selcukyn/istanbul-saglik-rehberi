@@ -9,22 +9,23 @@ interface FilterSectionProps {
 }
 
 export default function FilterSection({ data, currentFilters, onFilterChange }: FilterSectionProps) {
-  // Unique değerleri al
   const getUniqueValues = (key: string): string[] => {
     const values: { [key: string]: boolean } = {};
     data.forEach(item => {
-      if (item[key]) {
-        values[item[key]] = true;
+      // Hem eski hem yeni alan adlarını kontrol et
+      const value = item[key] || item[key.toLowerCase()] || item[key.toUpperCase()];
+      if (value) {
+        values[value] = true;
       }
     });
     return Object.keys(values).sort();
   };
 
   const uniqueValues = {
-    il: getUniqueValues('IL_ADI'),
-    ilce: getUniqueValues('ILCE_ADI'),
-    anaKategori: getUniqueValues('ANA_KATEGORI'),
-    altKategori: getUniqueValues('ALT_KATEGORI'),
+    il: getUniqueValues('Il Adi'),
+    ilce: getUniqueValues('Ilce Adi'),
+    anaKategori: getUniqueValues('Ana Kategori'),
+    altKategori: getUniqueValues('Alt Kategori')
   };
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
@@ -47,20 +48,7 @@ export default function FilterSection({ data, currentFilters, onFilterChange }: 
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div>
-          <select
-            className="w-full px-4 py-2 border rounded-md"
-            value={currentFilters.il}
-            onChange={(e) => handleFilterChange('il', e.target.value)}
-          >
-            <option value="">Tüm İller</option>
-            {uniqueValues.il.map(il => (
-              <option key={il} value={il}>{il}</option>
-            ))}
-          </select>
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <select
             className="w-full px-4 py-2 border rounded-md"
@@ -86,14 +74,27 @@ export default function FilterSection({ data, currentFilters, onFilterChange }: 
             ))}
           </select>
         </div>
-      </div>
 
-      <button
-        onClick={handleResetFilters}
-        className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md"
-      >
-        Sıfırla
-      </button>
+        <div>
+          <select
+            className="w-full px-4 py-2 border rounded-md"
+            value={currentFilters.altKategori}
+            onChange={(e) => handleFilterChange('altKategori', e.target.value)}
+          >
+            <option value="">Tüm Alt Kategoriler</option>
+            {uniqueValues.altKategori.map(kategori => (
+              <option key={kategori} value={kategori}>{kategori}</option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          onClick={handleResetFilters}
+          className="w-full md:w-auto px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors"
+        >
+          Filtreleri Sıfırla
+        </button>
+      </div>
     </div>
   );
 }
