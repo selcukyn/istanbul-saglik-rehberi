@@ -1,15 +1,14 @@
 'use client';
 
 import { HealthInstitution } from '@/types';
+import { truncateText, getCategoryIcon } from '@/lib/utils';
 
 interface HealthCardProps {
   institution: HealthInstitution;
 }
 
-// export function yerine export default function kullanıyoruz
 export default function HealthCard({ institution }: HealthCardProps) {
   const handleDirections = () => {
-    // Öncelikle yeni format koordinatları kontrol et, yoksa eski formatı kullan
     const lat = institution.Latitude || institution.ENLEM || 0;
     const lng = institution.Longitude || institution.BOYLAM || 0;
     
@@ -21,55 +20,67 @@ export default function HealthCard({ institution }: HealthCardProps) {
     }
   };
 
-  // Alt kategori bilgisini al (yeni veya eski format)
   const altKategori = institution["Alt Kategori"] || institution.ALT_KATEGORI || 'Belirtilmemiş';
+  const tesisAdi = institution["Saglik Tesisi Adi"] || 'Bilinmeyen Kurum';
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-2">
-        {institution["Saglik Tesisi Adi"] || 'Bilinmeyen Kurum'}
-      </h2>
-      
-      <div className="flex items-center gap-2">
-        <span className="text-gray-600">
-          {altKategori}
-        </span>
-        {(institution.Latitude || institution.ENLEM) && (
-          <span className="bg-blue-100 text-blue-800 text-sm px-2 py-0.5 rounded">
-            {((institution.Latitude || institution.ENLEM || 0) * 1000 / 1000).toFixed(1)} km
-          </span>
-        )}
-      </div>
-      
-      <p className="text-gray-700 mt-3">
-        {institution.ADRES}
-      </p>
-      
-      <p className="text-sm text-gray-500 mt-1">
-        {institution["Mahalle Adi"]}, {institution["Ilce Adi"]}
-      </p>
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col h-full">
+      <div className="flex-grow">
+        <div className="flex items-start gap-3 mb-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d={getCategoryIcon(altKategori)}
+            />
+          </svg>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {truncateText(tesisAdi, 40)}
+            </h2>
+            {institution.distance && (
+              <span className="text-sm text-blue-600 font-medium">
+                {institution.distance.toFixed(1)} km
+              </span>
+            )}
+          </div>
+        </div>
 
-      <div className="mt-4 flex justify-between items-center">
-        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
-          {altKategori}
+        <p className="text-sm text-gray-600 mb-2">
+          {truncateText(institution.ADRES, 100)}
+        </p>
+
+        <p className="text-xs text-gray-500">
+          {institution["Mahalle Adi"]}, {institution["Ilce Adi"]}
+        </p>
+      </div>
+
+      <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+        <span className="bg-blue-100 text-blue-800 text-xs px-3 py-1.5 rounded-full font-medium">
+          {truncateText(altKategori, 25)}
         </span>
         
         <button
           onClick={handleDirections}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors flex items-center gap-2"
+          className="bg-blue-100 text-blue-800 px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            strokeWidth={1.5} 
-            stroke="currentColor" 
-            className="w-5 h-5"
+            viewBox="0 0 20 20" 
+            fill="currentColor" 
+            className="w-4 h-4"
           >
             <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"
+              fillRule="evenodd" 
+              d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
+              clipRule="evenodd"
             />
           </svg>
           Yol Tarifi
