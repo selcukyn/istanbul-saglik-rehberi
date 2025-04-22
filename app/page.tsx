@@ -34,6 +34,10 @@ export default function Home() {
     loadData();
   }, []);
 
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+  };
+
   useEffect(() => {
     const filtered = data.filter(item => {
       const matchesIl = !filters.il || item.IL_ADI === filters.il;
@@ -62,7 +66,7 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8">
       <FilterSection
         currentFilters={filters}
-        onFilterChange={setFilters}
+        onFilterChange={handleFilterChange}
         data={data}
       />
       
